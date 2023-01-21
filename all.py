@@ -7,8 +7,6 @@ def get_all_info(brand_name):
   brand = requests.get(webpage)
   brand_content = brand.content
   soup = BeautifulSoup(brand_content, 'html.parser')
-
-#### CHECK IF MORE THAN ONE PAGE OF RESULTS
   
   href = soup.find(class_='shop-brand-btn')
     
@@ -18,8 +16,6 @@ def get_all_info(brand_name):
     large_brand_link = requests.get(large_brand)
     lb_content = large_brand_link.content
     soup = BeautifulSoup(lb_content, 'html.parser')
-
-#### GET PRODUCT NAMES
   
   product_info = soup.find_all(class_='product')
   names = []
@@ -27,15 +23,11 @@ def get_all_info(brand_name):
     name = each_name.find('img')
     names.append(name['alt'])
 
-#### GET PRODUCT LINKS
-  
   links = []
   for each_link in product_info:
     link = each_link['href']
     links.append('https://www.ulta.com' + link)
 
-#### GET INGREDIENTS
-  
   ingredient_list = []
   for link in links:
     product = requests.get(link)
@@ -47,13 +39,10 @@ def get_all_info(brand_name):
     else:
       for ingredient in ingredients:
         ingredient_list.append(ingredient.p)
-
-#### WRITE TO CSV
-  
+        
   with open("ulta.csv", "w") as ulta:
     writer = csv.writer(ulta)
     for x in range(len(ingredient_list)):
       writer.writerow([names[x], links[x], ingredient_list[x]])
-
 
 get_all_info(insert brand here)
